@@ -47,8 +47,8 @@ extern "C"
 JNIEXPORT jobject JNICALL
 Java_com_android_learning_jni_JavaCallNative_newJavaBookBean(JNIEnv *env, jobject instance, jstring bookName,
                                                              jstring author, jdouble price) {
-    const char *bookNamePoint = env->GetStringUTFChars(bookName, 0);
-    const char *authorPoint = env->GetStringUTFChars(author, 0);
+    const char *bookNamePoint = env->GetStringUTFChars(bookName, JNI_FALSE);
+    const char *authorPoint = env->GetStringUTFChars(author, JNI_FALSE);
     LOGD("########## bookName %s", bookNamePoint);
     LOGD("########## author %s", authorPoint);
     LOGD("########## price %f", price);
@@ -66,7 +66,55 @@ Java_com_android_learning_jni_JavaCallNative_newJavaBookBean(JNIEnv *env, jobjec
     }
     jobject javaBookBeanInstance = env->NewObject(javaBookBeanClass, constructorMethodID, bookName, author,
                                                   price);
-//    env->ReleaseStringUTFChars(bookName, bookNamePoint);
-//    env->ReleaseStringUTFChars(author, authorPoint);
+    env->ReleaseStringUTFChars(bookName, bookNamePoint);
+    env->ReleaseStringUTFChars(author, authorPoint);
     return javaBookBeanInstance;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_android_learning_jni_JavaCallNative_changeJavaBookName(JNIEnv *env, jobject instance, jobject javaBookBean) {
+    // TODO
+    jclass clazz = env->GetObjectClass(javaBookBean);
+    jfieldID priceFiled = env->GetFieldID(clazz, "price", "D");
+    if (priceFiled == nullptr) {
+        LOGD("########## not found JavaBookBean class price filed");
+        return;
+    }
+    jdouble price = env->GetDoubleField(javaBookBean, priceFiled);
+    LOGD("########## JavaBookBean price=%f", price);
+
+    jmethodID getNameMethodId = env->GetMethodID(clazz, "getName", "()Ljava/lang/String;");
+    if (getNameMethodId == nullptr) {
+        LOGD("########## not found JavaBookBean class getName Method");
+        return;
+    }
+    auto nameObject = (jstring) env->CallObjectMethod(javaBookBean, getNameMethodId);
+    const char *name = env->GetStringUTFChars(nameObject, JNI_FALSE);
+    LOGD("########## JavaBookBean name=%s", name);
+
+    jmethodID setNameMethodId = env->GetMethodID(clazz, "setName", "(Ljava/lang/String;)V");
+    if (setNameMethodId == nullptr) {
+        LOGD("########## not found JavaBookBean class setName Method");
+        return;
+    }
+    LOGD("########## strlen(name)= %d", strlen(name));
+    char newName[strlen(name)];
+    memset(newName, '\0', strlen(name));
+    strcpy(newName, name);
+    env->ReleaseStringUTFChars(nameObject, name);
+    LOGD("########## newName= %s", newName);
+    strcat(newName, "-jni");
+    const char *pName = newName;
+    jstring newNameString = env->NewStringUTF(pName);
+    env->CallVoidMethod(javaBookBean, setNameMethodId, newNameString);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_android_learning_jni_JavaCallNative_unityJavaBookPrice(JNIEnv *env, jobject instance,
+                                                                jobject javaBookBeanList) {
+
+    // TODO
+
 }

@@ -26,6 +26,18 @@ public class JavaBookBean implements Parcelable {
         return price;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
     @Override
     public int describeContents() {
         return 0;

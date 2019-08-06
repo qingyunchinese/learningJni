@@ -24,10 +24,17 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        helloWord()
-        sumTwoNumber(10, 6)
-        bubbleSort()
-        jniNewObject()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        runOnUiThread {
+            helloWord()
+            sumTwoNumber(10, 6)
+            bubbleSort()
+            jniNewObject()
+            jniChangeObject()
+        }
     }
 
     private fun helloWord() {
@@ -43,10 +50,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun bubbleSort() {
+        Log.v(ANDROID_LOG, "--------bubbleSort--------")
         javaCallNative.bubbleSort(null, 0)
         val intArray = intArrayOf(3, 4, 5, 0, 1, 2, 6, 7, 10)
         javaCallNative.bubbleSort(intArray, intArray.size)
-        Log.v(ANDROID_LOG, "--------bubbleSort--------")
         val bufferingLog = StringBuilder()
         intArray.forEach {
             if (bufferingLog.isEmpty()) {
@@ -59,13 +66,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun jniNewObject() {
-        val javaBookBean = javaCallNative.newJavaBookBean("Android Studio", "James", 9.87)
         Log.v(ANDROID_LOG, "--------jniNewObject--------")
+        val javaBookBean = javaCallNative.newJavaBookBean("Android Studio", "James", 9.87)
         if (javaBookBean == null) {
             Log.v(ANDROID_LOG, "failure")
         } else {
             Log.v(ANDROID_LOG, javaBookBean.toString())
         }
+    }
+
+    private fun jniChangeObject() {
+        Log.v(ANDROID_LOG, "--------jniChangeObject--------")
+        val javaBookBean=JavaBookBean("Android Studio", "James", 9.87)
+        javaCallNative.changeJavaBookName(javaBookBean)
+        Log.v(ANDROID_LOG, javaBookBean.toString())
     }
 
 }
