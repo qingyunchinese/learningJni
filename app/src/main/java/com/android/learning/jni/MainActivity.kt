@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity() {
             bubbleSort()
             jniNewObject()
             jniChangeObject()
+            jniGetListObject()
         }
     }
 
@@ -80,6 +81,21 @@ class MainActivity : AppCompatActivity() {
         val javaBookBean=JavaBookBean("Android Studio", "James", 9.87)
         javaCallNative.changeJavaBookName(javaBookBean)
         Log.v(ANDROID_LOG, javaBookBean.toString())
+    }
+
+    private fun jniGetListObject(){
+        Log.v(ANDROID_LOG, "--------jniGetListObject--------")
+        val bookList= mutableListOf<JavaBookBean>()
+        for(i in 1..5){
+            bookList.add(JavaBookBean("bookName$i", "James$i", i.plus(0.53)))
+        }
+        bookList.forEach {
+            Log.v(ANDROID_LOG, it.toString())
+        }
+        javaCallNative.unityJavaBookPrice(bookList.toList())
+        bookList.forEach {
+            Log.v(ANDROID_LOG, it.toString())
+        }
     }
 
 }

@@ -74,7 +74,7 @@ Java_com_android_learning_jni_JavaCallNative_newJavaBookBean(JNIEnv *env, jobjec
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_android_learning_jni_JavaCallNative_changeJavaBookName(JNIEnv *env, jobject instance, jobject javaBookBean) {
-    // TODO
+
     jclass clazz = env->GetObjectClass(javaBookBean);
     jfieldID priceFiled = env->GetFieldID(clazz, "price", "D");
     if (priceFiled == nullptr) {
@@ -98,7 +98,8 @@ Java_com_android_learning_jni_JavaCallNative_changeJavaBookName(JNIEnv *env, job
         LOGD("########## not found JavaBookBean class setName Method");
         return;
     }
-    LOGD("########## strlen(name)= %d", strlen(name));
+    jsize length = env->GetStringUTFLength(nameObject);
+    LOGD("########## strlen(name)= %d", length);
     char newName[strlen(name)];
     memset(newName, '\0', strlen(name));
     strcpy(newName, name);
@@ -113,8 +114,26 @@ Java_com_android_learning_jni_JavaCallNative_changeJavaBookName(JNIEnv *env, job
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_android_learning_jni_JavaCallNative_unityJavaBookPrice(JNIEnv *env, jobject instance,
-                                                                jobject javaBookBeanList) {
+                                                                jobject bookList) {
 
-    // TODO
+    jclass javaBookBeanListClass = env->GetObjectClass(bookList);
+    jmethodID methodGet = env->GetMethodID(javaBookBeanListClass, "get",
+                                           "(I)Ljava/lang/Object;");
+    jmethodID methodSize = env->GetMethodID(javaBookBeanListClass, "size", "()I");
+    jint len = env->CallIntMethod(bookList, methodSize);
+    LOGD("########## listSize= %d", len);
 
+    for (int i = 0; i < len; i++) {
+
+        jobject bookObject = env->CallObjectMethod(bookList, methodGet, i);
+        jclass bookClass = env->GetObjectClass(bookObject);
+
+        jmethodID setPriceMethodId = env->GetMethodID(bookClass, "setPrice", "(D)V");
+        if (setPriceMethodId == nullptr) {
+            LOGD("########## not found JavaBookBean class setPrice Method");
+            return;
+        }
+
+        env->CallVoidMethod(bookObject, setPriceMethodId, 9.0);
+    }
 }
