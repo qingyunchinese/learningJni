@@ -14,6 +14,17 @@
             android:layout_marginLeft="10dp"
             android:layout_height="match_parent">
 
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/java_call_jni"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:ignore="HardcodedText"
+                android:layout_marginTop="10dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:text="----------------Java Call Jni---------------------"
+                app:layout_constraintRight_toRightOf="parent"/>
+
         <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/helloWord"
                 android:layout_width="0dp"
@@ -24,7 +35,7 @@
                 android:textAllCaps="false"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toBottomOf="@id/java_call_jni"/>
 
         <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/sumTwoNumber"
@@ -85,6 +96,30 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/jniChangeObject"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/jni_call_java"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:ignore="HardcodedText"
+                android:layout_marginTop="10dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/jniGetListObject"
+                android:text="----------------Jni Call Java---------------------"
+                app:layout_constraintRight_toRightOf="parent"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/jniCallJavaString"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:text="jniCallJavaString"
+                tools:ignore="HardcodedText"
+                android:onClick="jniCallJavaString"
+                android:textAllCaps="false"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/jni_call_java"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -4,17 +4,20 @@ import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(),NativeCallback {
 
     private val javaCallNative: JavaCallNative by lazy {
         JavaCallNative()
     }
 
-    companion object {
-        const val ANDROID_LOG = "Android-JNI-java"
+    private val nativeCallJava: NativeCallJava by lazy {
+        NativeCallJava(this)
+    }
 
+    companion object {
         // Used to load the 'native-lib' library on application startup.
         init {
             System.loadLibrary("native-lib")
@@ -51,7 +54,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun bubbleSort() {
-        Log.v(ANDROID_LOG, "--------bubbleSort--------")
+        Log.v(Constants.ANDROID_LOG, "--------bubbleSort--------")
         javaCallNative.bubbleSort(null, 0)
         val intArray = intArrayOf(3, 4, 5, 0, 1, 2, 6, 7, 10)
         javaCallNative.bubbleSort(intArray, intArray.size)
@@ -63,38 +66,48 @@ class MainActivity : AppCompatActivity() {
                 bufferingLog.append(",$it")
             }
         }
-        Log.v(ANDROID_LOG, bufferingLog.toString())
+        Log.v(Constants.ANDROID_LOG, bufferingLog.toString())
     }
 
     private fun jniNewObject() {
-        Log.v(ANDROID_LOG, "--------jniNewObject--------")
+        Log.v(Constants.ANDROID_LOG, "--------jniNewObject--------")
         val javaBookBean = javaCallNative.newJavaBookBean("Android Studio", "James", 9.87)
         if (javaBookBean == null) {
-            Log.v(ANDROID_LOG, "failure")
+            Log.v(Constants.ANDROID_LOG, "failure")
         } else {
-            Log.v(ANDROID_LOG, javaBookBean.toString())
+            Log.v(Constants.ANDROID_LOG, javaBookBean.toString())
         }
     }
 
     private fun jniChangeObject() {
-        Log.v(ANDROID_LOG, "--------jniChangeObject--------")
+        Log.v(Constants.ANDROID_LOG, "--------jniChangeObject--------")
         val javaBookBean=JavaBookBean("Android Studio", "James", 9.87)
         javaCallNative.changeJavaBookName(javaBookBean)
-        Log.v(ANDROID_LOG, javaBookBean.toString())
+        Log.v(Constants.ANDROID_LOG, javaBookBean.toString())
     }
 
     private fun jniGetListObject(){
-        Log.v(ANDROID_LOG, "--------jniGetListObject--------")
+        Log.v(Constants.ANDROID_LOG, "--------jniGetListObject--------")
         val bookList= mutableListOf<JavaBookBean>()
         for(i in 1..5){
             bookList.add(JavaBookBean("bookName$i", "James$i", i.plus(0.53)))
         }
         bookList.forEach {
-            Log.v(ANDROID_LOG, it.toString())
+            Log.v(Constants.ANDROID_LOG, it.toString())
         }
         javaCallNative.unityJavaBookPrice(bookList.toList())
         bookList.forEach {
-            Log.v(ANDROID_LOG, it.toString())
+            Log.v(Constants.ANDROID_LOG, it.toString())
+        }
+    }
+
+    fun jniCallJavaString(view:View){
+        nativeCallJava.nativeString()
+    }
+
+    override fun stringFromJNI(jniStr: String?) {
+        jniStr?.let {
+            showMessageDialog(jniStr)
         }
     }
 

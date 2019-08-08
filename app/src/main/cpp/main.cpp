@@ -141,3 +141,31 @@ Java_com_android_learning_jni_JavaCallNative_unityJavaBookPrice(JNIEnv *env, job
         env->CallVoidMethod(bookObject, setPriceMethodId, 9.0);
     }
 }
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_android_learning_jni_NativeCallJava_startAsynchronousTask(JNIEnv *env, jobject instance, jint taskId) {
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_android_learning_jni_NativeCallJava_getNativeString(JNIEnv *env, jobject instance) {
+
+    jclass nativeCallJavaClass = env->FindClass("com/android/learning/jni/NativeCallJava");
+    if (nativeCallJavaClass == 0) {
+        LOGD("########## not found nativeCallJava class");
+        return;
+    }
+
+    jmethodID javaCallbackMethod = env->GetMethodID(nativeCallJavaClass,
+                                                    "stringFromJNI", "(Ljava/lang/String;)V");
+    if (javaCallbackMethod == 0) {
+        LOGD("########## not found nativeCallJava stringFromJNI method");
+        return;
+    }
+
+    string jniCallBackString = "From Jni Callback String";
+    jstring jniCallBackStringUTF = env->NewStringUTF(jniCallBackString.c_str());
+    env->CallVoidMethod(instance, javaCallbackMethod, jniCallBackStringUTF);
+}
