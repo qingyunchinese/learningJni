@@ -47,22 +47,22 @@ extern "C"
 JNIEXPORT jobject JNICALL
 Java_com_android_learning_jni_JavaCallNative_newJavaBookBean(JNIEnv *env, jobject instance, jstring bookName,
                                                              jstring author, jdouble price) {
-    const char *bookNamePoint = env->GetStringUTFChars(bookName, JNI_FALSE);
-    const char *authorPoint = env->GetStringUTFChars(author, JNI_FALSE);
+    const char *bookNamePoint = env->GetStringUTFChars(bookName, NULL);
+    const char *authorPoint = env->GetStringUTFChars(author, NULL);
     LOGD("########## bookName %s", bookNamePoint);
     LOGD("########## author %s", authorPoint);
     LOGD("########## price %f", price);
     jclass javaBookBeanClass = env->FindClass("com/android/learning/jni/JavaBookBean");
     if (javaBookBeanClass == NULL) {
         LOGD("########## not found JavaBookBean class ");
-        return NULL;
+        return nullptr;
     }
     const char *constructorMethodName = "<init>";
     jmethodID constructorMethodID = env->GetMethodID(javaBookBeanClass, constructorMethodName,
                                                      "(Ljava/lang/String;Ljava/lang/String;D)V");
     if (constructorMethodID == NULL) {
         LOGD("########## not found JavaBookBean class constructor Method ");
-        return NULL;
+        return nullptr;
     }
     jobject javaBookBeanInstance = env->NewObject(javaBookBeanClass, constructorMethodID, bookName, author,
                                                   price);
@@ -90,7 +90,7 @@ Java_com_android_learning_jni_JavaCallNative_changeJavaBookName(JNIEnv *env, job
         return;
     }
     auto nameObject = (jstring) env->CallObjectMethod(javaBookBean, getNameMethodId);
-    const char *name = env->GetStringUTFChars(nameObject, JNI_FALSE);
+    const char *name = env->GetStringUTFChars(nameObject, NULL);
     LOGD("########## JavaBookBean name=%s", name);
 
     jmethodID setNameMethodId = env->GetMethodID(clazz, "setName", "(Ljava/lang/String;)V");
@@ -105,7 +105,11 @@ Java_com_android_learning_jni_JavaCallNative_changeJavaBookName(JNIEnv *env, job
     strcpy(newName, name);
     env->ReleaseStringUTFChars(nameObject, name);
     LOGD("########## newName= %s", newName);
-    strcat(newName, "-jni");
+    string jni = "-jni";
+    jstring jniUTF = env->NewStringUTF(jni.c_str());
+    const char *jniPoint = env->GetStringUTFChars(jniUTF, NULL);
+    strcat(newName, jniPoint);
+    env->ReleaseStringUTFChars(jniUTF, jniPoint);
     const char *pName = newName;
     jstring newNameString = env->NewStringUTF(pName);
     env->CallVoidMethod(javaBookBean, setNameMethodId, newNameString);
