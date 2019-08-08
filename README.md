@@ -34,4 +34,11 @@ double|D
 int[]|[I
 int[][]|[[I
 
+4.Method signature example（方法签名示例）
 
+java方法 | 方法签名（JNI）
+---- | ---
+String stringFromJNI()|()Ljava/lang/String;
+int List.size()|()I
+Object List.get(int index)|(I)Ljava/lang/Object;
+void setPrice(double price)|(D)V
