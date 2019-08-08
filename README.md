@@ -1,3 +1,7 @@
+Jni Tips Developer
+
+https://developer.android.com/training/articles/perf-jni
+
 1.basic variable type (基础数据对照表)
 
 Java类型 | 本地类型（JNI）
