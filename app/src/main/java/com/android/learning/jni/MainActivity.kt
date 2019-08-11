@@ -1,20 +1,34 @@
 package com.android.learning.jni
 
 import android.annotation.SuppressLint
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Looper
 import android.util.Log
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.concurrent.atomic.AtomicInteger
 
-class MainActivity : AppCompatActivity(),NativeCallback {
+class MainActivity : AppCompatActivity(), UINativeCallback, AsyncThreadCallback {
 
     private val javaCallNative: JavaCallNative by lazy {
         JavaCallNative()
     }
 
-    private val nativeCallJava: NativeCallJava by lazy {
-        NativeCallJava(this)
+    private val callJavaInUIThread: CallJavaInUIThread by lazy {
+        CallJavaInUIThread(this)
+    }
+
+    private val nCallJInAsyncThread: CallJavaInAsyncThread by lazy {
+        CallJavaInAsyncThread(this)
+    }
+
+    private val atomicInteger: AtomicInteger by lazy {
+        AtomicInteger()
+    }
+
+    init {
+        nCallJInAsyncThread.init()
     }
 
     companion object {
@@ -81,15 +95,15 @@ class MainActivity : AppCompatActivity(),NativeCallback {
 
     private fun jniChangeObject() {
         Log.v(Constants.ANDROID_LOG, "--------jniChangeObject--------")
-        val javaBookBean=JavaBookBean("Android Studio", "James", 9.87)
+        val javaBookBean = JavaBookBean("Android Studio", "James", 9.87)
         javaCallNative.changeJavaBookName(javaBookBean)
         Log.v(Constants.ANDROID_LOG, javaBookBean.toString())
     }
 
-    private fun jniGetListObject(){
+    private fun jniGetListObject() {
         Log.v(Constants.ANDROID_LOG, "--------jniGetListObject--------")
-        val bookList= mutableListOf<JavaBookBean>()
-        for(i in 1..5){
+        val bookList = mutableListOf<JavaBookBean>()
+        for (i in 1..5) {
             bookList.add(JavaBookBean("bookName$i", "James$i", i.plus(0.53)))
         }
         bookList.forEach {
@@ -101,14 +115,38 @@ class MainActivity : AppCompatActivity(),NativeCallback {
         }
     }
 
-    fun jniCallJavaString(view:View){
-        nativeCallJava.nativeString()
+    fun jniCallJavaString(view: View) {
+        callJavaInUIThread.nativeString()
     }
 
     override fun stringFromJNI(jniStr: String?) {
         jniStr?.let {
             showMessageDialog(jniStr)
         }
+    }
+
+    fun jniThread(view: View) {
+        val id = atomicInteger.incrementAndGet()
+        val javaBookBean = JavaBookBean("bookName$id", "James$id", id.plus(0.53))
+        nCallJInAsyncThread.work(javaBookBean)
+    }
+
+    override fun onNativeJavaBook(javaBookBean: JavaBookBean?) {
+        Log.v(Constants.ANDROID_LOG, "UIThread.currentThread().id:" + Looper.getMainLooper().thread.id)
+        Log.v(Constants.ANDROID_LOG, "Thread.currentThread().id:" + Thread.currentThread().id)
+        val asyncThreadId = Thread.currentThread().id
+        val asyncThreadName = Thread.currentThread().name
+        javaBookBean?.let {
+            runOnUiThread {
+                showMessageDialog("UIThread.id:${Looper.getMainLooper().thread.id}(${Looper.getMainLooper().thread.name})\nAsyncThread.id:$asyncThreadId($asyncThreadName)")
+                Log.v(Constants.ANDROID_LOG, javaBookBean.toString())
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        nCallJInAsyncThread.release()
+        super.onDestroy()
     }
 
 }

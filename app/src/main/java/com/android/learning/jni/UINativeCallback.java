@@ -1,5 +1,5 @@
 package com.android.learning.jni;
 
-public interface NativeCallback {
+public interface UINativeCallback {
     void stringFromJNI(String jniStr);
 }

@@ -121,6 +121,19 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/jni_call_java"/>
 
+        <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/jniThread"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:text="jniThread"
+                tools:ignore="HardcodedText"
+                android:onClick="jniThread"
+                android:textAllCaps="false"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/jniCallJavaString"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.core.widget.NestedScrollView>

@@ -11,9 +11,7 @@ void JavaCallNative::bubbleSort(int *array, int arrayLength) {
         return;
     }
     int *p = array;
-    LOGD("########## &p=%d", &p);
-    LOGD("########## *p=%d", *p);
-    LOGD("########## p=%d", p);
+    LOGD("########## p=%d", p[0]);
     for (int i = 0; i < arrayLength; i++) {
         int flag = p[i];
         bool doSwitchArray = true;

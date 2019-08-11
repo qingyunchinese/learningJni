@@ -3,7 +3,16 @@
 #include <random>
 #include <cstdlib>
 #include "androidlog.h"
+
 #include "java_call_native.h"
+
+#include "java_exception.h"
+
+#include "jni_load.h"
+
+#include "simaple_thread.h"
+
+#include <pthread.h>
 
 using namespace std;
 
@@ -144,15 +153,9 @@ Java_com_android_learning_jni_JavaCallNative_unityJavaBookPrice(JNIEnv *env, job
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_android_learning_jni_NativeCallJava_startAsynchronousTask(JNIEnv *env, jobject instance, jint taskId) {
+Java_com_android_learning_jni_CallJavaInUIThread_getNativeString(JNIEnv *env, jobject instance) {
 
-}
-
-extern "C"
-JNIEXPORT void JNICALL
-Java_com_android_learning_jni_NativeCallJava_getNativeString(JNIEnv *env, jobject instance) {
-
-    jclass nativeCallJavaClass = env->FindClass("com/android/learning/jni/NativeCallJava");
+    jclass nativeCallJavaClass = env->FindClass("com/android/learning/jni/CallJavaInUIThread");
     if (nativeCallJavaClass == 0) {
         LOGD("########## not found nativeCallJava class");
         return;

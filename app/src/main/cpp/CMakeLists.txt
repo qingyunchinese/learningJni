@@ -21,9 +21,17 @@ add_library( # Sets the name of the library.
 
         androidlog.h
 
+        jni_load.h
+
+        jni_load.cpp
+
+        java_exception.h
+
         java_call_native.h
 
         java_call_native.cpp
+
+        simaple_thread.h
 
         )
 
